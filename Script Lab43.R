@@ -1,0 +1,152 @@
+#-----------------LABORATORIO 43---------------------
+#-----------------PRETTYHEATMAP----------------------
+#---ACADÉMICO: DRA. CARLA CAROLINA PÉREZ HERNÁNDEZ---
+#---------ALUMNA: ANA GRISEL SANJUAN MERIDA----------
+
+#Laboratorio: Mapa de calor térmico
+#Datos genicos tomados de Sahir Bhatnagar
+#Objetivo: Realizar un heatmap con datos geneticos
+
+#En este ejercicio vamos a:
+#1. Cargar matriz hipotética de datos y dataframes adicionales
+#2. Realizar varios heatmaps
+
+#El mapa de calor es una representación gráfica de datos que utiliza un sistema de
+#codificación de colores para representar diferentes valores
+
+#Instalar paquetería
+install.packages("pheatmap")
+
+#Abrir la librería
+library(pheatmap)
+
+#Importar datos
+#Como son tres archivos que se ocuparán, debo activar las tres rutas
+file.choose()
+file.choose()
+file.choose()
+
+#El primer archivo se convertirá en matriz
+#Objeto matricial llamado genes que será leída como matriz
+#Está en formato csv.
+#Está separado por comas sep=","
+#En el encabezado están los títulos header=T
+#En la primera columna están los nombres de los genes row.names=1
+genes <- as.matrix(
+  read.csv("C:\\Users\\Lenovo\\Documents\\GitHub\\LAB-43\\L43 Input\\heatmap_data.csv",
+           sep=",",
+           header=T,
+           row.names=1))
+#En el environment se ve el objeto generado genes
+
+#Los otros dos archivos serán dataframes
+#Objeto llamado annotation_row
+#Está en formato csv.
+#En el encabezado están los títulos header=T
+#En la primera columna están los nombres de los genes row.names=1
+annotation_row <- read.csv("C:\\Users\\Lenovo\\Documents\\GitHub\\LAB-43\\L43 Input\\annotation_row.csv", header=T,
+                           row.names=1)
+
+#Objeto llamado annotation_col
+#Está en formato csv.
+#En el encabezado están los títulos header=T
+#En la primera columna están los nombres de los genes row.names=1
+annotation_col <- read.csv("C:\\Users\\Lenovo\\Documents\\GitHub\\LAB-43\\L43 Input\\annotation_col.csv", header=T,
+           row.names=1)
+
+#Dibujando el heatmap
+#Comando pheatmap y la matriz genes
+pheatmap(genes)
+
+#Cambiando el tamaño de la fuente (los cuadritos)
+pheatmap(genes, frontsize=6)
+
+#Quitando uno de los dendrogramas
+#Se quitará el dendrograma de las columnas, por lo que los renglones si interesan (true)
+#Como las columnas de pacientes (eje de las X) no estarán, ponemos False
+pheatmap(genes, frontsize=6, cluster_rows = T, cluster_cols = F)
+
+#Se quitará el dendrograma de los renglones, por lo que las columnas si interesan (true)
+#Como los renglones de genes (eje de las Y) no estarán, ponemos False
+pheatmap(genes, frontsize=6, cluster_rows = F, cluster_cols = T)
+
+#Para que se muestren nuevamente los dendrogramas en ambos ejes
+pheatmap(genes, frontsize=6, cluster_rows = T, cluster_cols = T)
+
+#Identificar si hay patrones sibyacentes a las anotaciones de columnas y renglones
+pheatmap(genes, frontsize=6, cluster_rows = T, cluster_cols = T, annotation_row = annotation_row)
+
+#Para añadir anotaciones en las columnas
+pheatmap(genes, frontsize=6, cluster_rows = T, cluster_cols = T, annotation_row = annotation_row, annotation_col = annotation_col)
+
+#Generar gráfico de manera completa
+#Se quita dendrograma de renglones
+pheatmap(genes, frontsize=6, cluster_rows = T, cluster_cols = T, annotation_row = annotation_row, annotation_col = annotation_col, treeheight_row = 0, treeheight_col = 0, main = "expresión genética")
+
+#Tomando una pequeña muestra de la base general para crear un subset
+#El subconjunto de datos proviene de la base matricial llamada genes
+#Extraerá ciertos datos de un vector (del gen 1 al gen 5)
+#Interesándonos por los pacientes del 55 al 60
+#También, del mismo vector, extraer del gen 1 al 5 y pacientes del 20 al 35
+#También, del mismo vector, extraer pacientes del 55 al 60
+sub <- genes [c(1:5, 55:60), c(1:5, 20:35, 55:60)]
+
+#Generar mapa de calor del subconjunto llamado sub
+pheatmap(sub, frontsize=6, cluster_rows = T, cluster_cols = T, annotation_row = annotation_row, annotation_col = annotation_col, treeheight_row = 0, treeheight_col = 0, main = "expresión genética")
+
+#Desplegar valores del gráfico recién obtenido
+#Del mapa de calor del subconjunto llamado sub el tamaño será de 8
+#Las anotaciones de la leyenda será falsa
+#Desplegar los números (True)
+#El tamaño de los números será de 6
+pheatmap(sub, frontsize=6, cluster_rows = T, cluster_cols = T, annotation_row = annotation_row, annotation_col = annotation_col, treeheight_row = 0, treeheight_col = 0, main = "expresión genética", fontsize = 8, annotation_legend = FALSE, display_numbers = TRUE, fontsize_number = 6)
+
+#Para añadir elemento estético adicional
+#Cargamos paquetería para cambiar color
+install.packages("viridis")
+install.packages("viridisLite")
+
+#Abrimos la librería
+library(viridis)
+#Hay cuatro paletas de colores: magma, plasma, cividis e inferno
+
+#Volviendo a cargar pheatmap
+library(pheatmap)
+
+#Uso de paletas de colores para una mejor estética
+#Se usarpa paleta viridis y la opción plasma
+#Y seis facetas diferentes
+pheatmap(sub, frontsize=6, cluster_rows = T, cluster_cols = T, annotation_row = annotation_row,
+         annotation_col = annotation_col, treeheight_row = 0, treeheight_col = 0,
+         main = "expresión genética", fontsize = 8, annotation_legend = FALSE, display_numbers = TRUE,
+         fontsize_number = 6, col=viridis_pal(option="plasma") (6))
+
+#Para usar otro tono de paleta de colores: magma
+pheatmap(sub, frontsize=6, cluster_rows = T, cluster_cols = T, annotation_row = annotation_row,
+         annotation_col = annotation_col, treeheight_row = 0, treeheight_col = 0,
+         main = "expresión genética", fontsize = 8, annotation_legend = FALSE, display_numbers = TRUE,
+         fontsize_number = 6, col=viridis_pal(option="magma") (6))
+
+#Para usar otro tono de paleta de colores: viridis
+pheatmap(sub, frontsize=6, cluster_rows = T, cluster_cols = T, annotation_row = annotation_row,
+         annotation_col = annotation_col, treeheight_row = 0, treeheight_col = 0,
+         main = "expresión genética", fontsize = 8, annotation_legend = FALSE, display_numbers = TRUE,
+         fontsize_number = 6, col=viridis_pal(option="viridis") (6))
+
+#Algunos elementos adicionales
+#Identificar la distribución de las distancias
+dist(sub)
+
+#Identificar el mapa de calor de la correlación de los datos de pacientes
+pheatmap(cor(sub))
+
+#Visualzar la correlación existente entre los genes
+#Identificar matriz transpuesta
+#Crear objeto llamado trans
+#Dicho dataframe será igual a la matriz trasnpuesta de la sub base de datos
+trans <- t(sub)
+
+#Mapa de calor de la correlacipon de los genes con la matriz transpuesta
+pheatmap(cor(trans))
+
+#------------------------FIN DE LABORATORIO 43-------------------------
